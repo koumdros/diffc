@@ -47,6 +47,8 @@ class Color:
     DEFAULT = "\x1b[0m"
 
 class Diffc:
+    """Class computing word diff and coloring the terminal output
+    """
 
     P_TRD_RANGE = re.compile("^[\d,]*(a|c|d)[\d,]*$")
     P_TRD_LEFT = re.compile("^<")
@@ -60,6 +62,8 @@ class Diffc:
     LINE_BREAK = "\n"
 
     def __init__(self):
+        """Initilization of instance variables
+        """
         self.left_buf = []
         self.center_buf = []
         self.right_buf = []
@@ -78,6 +82,8 @@ class Diffc:
         self.color_right_diff = Color.BG_GREEN + Color.FG_BLACK
 
     def color(self, input):
+        """Appending color sequences to the input string
+        """
         output = []
 
         for line in input:
