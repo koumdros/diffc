@@ -26,6 +26,8 @@ __author__ = "Toshiyuki Fukuzawa"
 
 import sys
 import re
+import os
+import subprocess
 
 from diff_match_patch import diff_match_patch
 
@@ -189,9 +191,27 @@ class Diffc:
         self.center_buf[:] = []
         self.right_buf[:] = []
 
+    def diff(self, args):
+        diff_cmd = "diff"
+        if 'DIFFC_DIFF_CMD' in os.environ:
+            diff_cmd = os.environ['DIFFC_DIFF_CMD']
+
+        args.insert(0, diff_cmd)
+
+        result = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.readlines()
+
+        return result
+
 if __name__ == "__main__":
     d = Diffc()
-    input = map(lambda x: re.sub("[\r\n]*$","",x), sys.stdin.readlines())
+
+    lines = []
+    if len(sys.argv) > 1 :
+        lines = d.diff(sys.argv[1:])
+    else:
+        lines = sys.stdin.readlines()
+
+    input = map(lambda x: re.sub("[\r\n]*$","",x), lines)
     output = d.color(input)
     for r in output :
         print(r)
