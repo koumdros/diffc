@@ -34,10 +34,10 @@ build3_test: build3
 	python3 ${BIN3_DIR}/diffc_test.py
 
 clean:
-	rm -rf ${BIN_DIR}
+	rm -rf ${BIN_DIR}/*
 	mkdir -p ${BIN_DIR}
 
 clean3:
-	rm -rf ${BIN3_DIR}
+	rm -rf ${BIN3_DIR}/*
 	mkdir -p ${BIN3_DIR}
 	rm -f /tmp/diff_match_patch.py.tmp
