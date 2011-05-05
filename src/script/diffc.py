@@ -28,6 +28,7 @@ import sys
 import re
 import os
 import subprocess
+import signal
 
 from diff_match_patch import diff_match_patch
 
@@ -202,14 +203,24 @@ class Diffc:
 
         return result
 
+def signal_handler(signum, frame):
+    pass
+
 if __name__ == "__main__":
     d = Diffc()
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGQUIT, signal_handler)
 
     lines = []
     if len(sys.argv) > 1 :
         lines = d.diff(sys.argv[1:])
     else:
-        lines = sys.stdin.readlines()
+        try : 
+            lines = sys.stdin.readlines()
+        except IOError:
+            print("Interrupted.") 
+            exit()
 
     input = map(lambda x: re.sub("[\r\n]*$","",x), lines)
     output = d.color(input)
