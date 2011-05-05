@@ -1903,7 +1903,7 @@ class patch_obj:
       data = data.encode("utf-8")
       text.append(urllib.quote(data, "!~*'();/?:@&=+$,# ") + "\n")
     return "".join(text)
-#!/usr/bin/python
+#!/usr/bin/python2.4
 
 """ diffc
  http://code.google.com/p/diffc/
@@ -1933,6 +1933,7 @@ import sys
 import re
 import os
 import subprocess
+import signal
 
 
 class Color:
@@ -1992,15 +1993,10 @@ class Diffc:
         """
         output = []
 
-        for line in input:
-            if self.P_TRD_RANGE.match(line):
-                self.is_traditional_diff_style = True
-                output += self.calc_word_diff()
-                output += [ self.color_info + line + Color.DEFAULT ]
-                continue
+        self.check_diff_type(input)
 
-            if self.P_UNI_RANGE.match(line):
-                self.is_unified_diff_style = True
+        for line in input:
+            if self.is_info(line):
                 output += self.calc_word_diff()
                 output += [ self.color_info + line + Color.DEFAULT ]
                 continue
@@ -2095,6 +2091,37 @@ class Diffc:
         self.center_buf[:] = []
         self.right_buf[:] = []
 
+    def is_info(self, line):
+        if self.P_TRD_RANGE.match(line) or self.P_UNI_RANGE.match(line):
+            return True
+
+        return False
+
+    def check_diff_type(self, input):
+        # returns immediately if already know the diff type
+        if self.is_traditional_diff_style or self.is_unified_diff_style:
+            return
+
+        # first, checking with the range patterns
+        for line in input:
+            if self.P_TRD_RANGE.match(line):
+                self.is_traditional_diff_style = True
+                return
+
+            if self.P_UNI_RANGE.match(line):
+                self.is_unified_diff_style = True
+                return
+
+        # second, with the diff patterns
+        for line in input:
+            if self.P_TRD_LEFT.match(line) or self.P_TRD_RIGHT.match(line):
+                self.is_traditional_diff_style = True
+                return
+
+            if self.P_UNI_LEFT.match(line) or self.P_UNI_RIGHT.match(line):
+                self.is_unified_diff_style = True
+                return
+
     def diff(self, args):
         diff_cmd = "diff"
         if 'DIFFC_DIFF_CMD' in os.environ:
@@ -2106,14 +2133,24 @@ class Diffc:
 
         return result
 
+def signal_handler(signum, frame):
+    pass
+
 if __name__ == "__main__":
     d = Diffc()
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGQUIT, signal_handler)
 
     lines = []
     if len(sys.argv) > 1 :
         lines = d.diff(sys.argv[1:])
     else:
-        lines = sys.stdin.readlines()
+        try : 
+            lines = sys.stdin.readlines()
+        except IOError:
+            print("Interrupted.") 
+            exit()
 
     input = map(lambda x: re.sub("[\r\n]*$","",x), lines)
     output = d.color(input)
