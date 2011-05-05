@@ -89,15 +89,10 @@ class Diffc:
         """
         output = []
 
-        for line in input:
-            if self.P_TRD_RANGE.match(line):
-                self.is_traditional_diff_style = True
-                output += self.calc_word_diff()
-                output += [ self.color_info + line + Color.DEFAULT ]
-                continue
+        self.check_diff_type(input)
 
-            if self.P_UNI_RANGE.match(line):
-                self.is_unified_diff_style = True
+        for line in input:
+            if self.is_info(line):
                 output += self.calc_word_diff()
                 output += [ self.color_info + line + Color.DEFAULT ]
                 continue
@@ -191,6 +186,37 @@ class Diffc:
         self.left_buf[:] = []
         self.center_buf[:] = []
         self.right_buf[:] = []
+
+    def is_info(self, line):
+        if self.P_TRD_RANGE.match(line) or self.P_UNI_RANGE.match(line):
+            return True
+
+        return False
+
+    def check_diff_type(self, input):
+        # returns immediately if already know the diff type
+        if self.is_traditional_diff_style or self.is_unified_diff_style:
+            return
+
+        # first, checking with the range patterns
+        for line in input:
+            if self.P_TRD_RANGE.match(line):
+                self.is_traditional_diff_style = True
+                return
+
+            if self.P_UNI_RANGE.match(line):
+                self.is_unified_diff_style = True
+                return
+
+        # second, with the diff patterns
+        for line in input:
+            if self.P_TRD_LEFT.match(line) or self.P_TRD_RIGHT.match(line):
+                self.is_traditional_diff_style = True
+                return
+
+            if self.P_UNI_LEFT.match(line) or self.P_UNI_RIGHT.match(line):
+                self.is_unified_diff_style = True
+                return
 
     def diff(self, args):
         diff_cmd = "diff"

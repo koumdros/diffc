@@ -165,17 +165,14 @@ class TestDiffc(unittest.TestCase):
     def test_uni_single_line(self):
         global CI, CD, CL, CLD, CR, CRD
 
-        diff = ['--- aaa 2011-05-01 00:00:00.000000000 +0900',
-                '+++ aaa 2011-05-01 01:00:00.000000000 +0900',
-                '@@ -1 +1 @@',
-                '-check this dokument. On', 
-                '+check this document. On']
+        diff = [
+            '@@ -1 +1 @@',
+            '-check this dokument. On', 
+            '+check this document. On']
 
         result = self.diffc.color(diff)
 
         expected = [
-            '--- aaa 2011-05-01 00:00:00.000000000 +0900',
-            '+++ aaa 2011-05-01 01:00:00.000000000 +0900',
             CI + '@@ -1 +1 @@' + CD,
             CL + '-' + CD + CL + 'check this do' + CD \
                 + CLD + 'k' + CD + CL + 'ument. On' + CD,
@@ -190,24 +187,21 @@ class TestDiffc(unittest.TestCase):
     def test_uni_multiple_diff(self):
         global CI, CD, CL, CLD, CR, CRD
 
-        diff = ['--- aaa 2011-05-01 00:00:00.000000000 +0900',
-                '+++ aaa 2011-05-01 01:00:00.000000000 +0900',
-                '@@ -1,5 +1,5 @@',
-                '-aaa',
-                '-bbb',
-                '+axa',
-                '+byb',
-                ' ccc',
-                '-ddd',
-                '-eee',
-                '+dxd',
-                '+eze']
+        diff = [             
+            '@@ -1,5 +1,5 @@',
+            '-aaa',
+            '-bbb',
+            '+axa',
+            '+byb',
+            ' ccc',
+            '-ddd',
+            '-eee',
+            '+dxd',
+            '+eze']
 
         result = self.diffc.color(diff)
 
         expected = [
-            '--- aaa 2011-05-01 00:00:00.000000000 +0900',
-            '+++ aaa 2011-05-01 01:00:00.000000000 +0900',
             CI + '@@ -1,5 +1,5 @@' + CD,
             CL + '-' + CD + CL + 'a' + CD + CLD + 'a' + CD + CL + 'a' + CD,
             CL + '-' + CD + CL + 'b' + CD + CLD + 'b' + CD + CL + 'b' + CD,
@@ -227,18 +221,15 @@ class TestDiffc(unittest.TestCase):
     def test_uni_insert_only(self):
         global CI, CD, CL, CLD, CR, CRD
 
-        diff = ['--- aaa 2011-05-01 00:00:00.000000000 +0900', 
-                '+++ aaa 2011-05-01 01:00:00.000000000 +0900',
-                '@@ -0,0 +1,3 @@',
-                '+aaa', 
-                '+bbb',
-                '+ccc']
+        diff = [
+            '@@ -0,0 +1,3 @@',
+            '+aaa', 
+            '+bbb',
+            '+ccc']
 
         result = self.diffc.color(diff)
 
         expected = [
-            '--- aaa 2011-05-01 00:00:00.000000000 +0900', 
-            '+++ aaa 2011-05-01 01:00:00.000000000 +0900',
             CI + '@@ -0,0 +1,3 @@' + CD,
             CR + '+' + CD + CRD + 'aaa' + CD,
             CR + '+' + CD + CRD + 'bbb' + CD,
