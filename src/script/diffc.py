@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
 
 """ diffc
  http://code.google.com/p/diffc/
