@@ -11,8 +11,8 @@ BIN3_DIR=./bin/python3
 
 build: clean
 	cat ./docs/HEADER > ${BIN_DIR}/diffc
-	cat ${SRC_SCRIPT_DIR}/diff_match_patch.py >> ${BIN_DIR}/diffc
-	cat ${SRC_SCRIPT_DIR}/diffc.py | grep -v 'import diff_match_patch' >> ${BIN_DIR}/diffc
+	cat ${SRC_SCRIPT_DIR}/diff_match_patch.py | grep -v '#!/usr/bin/python2.4' >> ${BIN_DIR}/diffc
+	cat ${SRC_SCRIPT_DIR}/diffc.py | grep -v '#!/usr/bin/python2.4' | grep -v 'import diff_match_patch' >> ${BIN_DIR}/diffc
 	chmod 755 ${BIN_DIR}/diffc
 
 build_test: build
@@ -24,8 +24,8 @@ build3: clean3
 	cat ./docs/HEADER > ${BIN3_DIR}/diffc
 	cp ${SRC_SCRIPT_DIR}/diff_match_patch.py /tmp/diff_match_patch.py.tmp
 	perl -i -pe 's#/ (\d)#// $$1#g' /tmp/diff_match_patch.py.tmp
-	cat /tmp/diff_match_patch.py.tmp >> ${BIN3_DIR}/diffc
-	cat ${SRC_SCRIPT_DIR}/diffc.py | grep -v 'import diff_match_patch' >> ${BIN3_DIR}/diffc
+	cat /tmp/diff_match_patch.py.tmp  | grep -v '#!/usr/bin/python2.4' >> ${BIN3_DIR}/diffc
+	cat ${SRC_SCRIPT_DIR}/diffc.py | grep -v '#!/usr/bin/python2.4' | grep -v 'import diff_match_patch' >> ${BIN3_DIR}/diffc
 	chmod 755 ${BIN3_DIR}/diffc
 
 build3_test: build3

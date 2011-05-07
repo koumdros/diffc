@@ -18,7 +18,6 @@ The binary was auto-generated from the src/ files. Please see
 """
 
 
-#!/usr/bin/python2.4
 
 """Diff Match and Patch
 
@@ -1903,7 +1902,6 @@ class patch_obj:
       data = data.encode("utf-8")
       text.append(urllib.quote(data, "!~*'();/?:@&=+$,# ") + "\n")
     return "".join(text)
-#!/usr/bin/python2.4
 
 """ diffc
  http://code.google.com/p/diffc/
