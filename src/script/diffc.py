@@ -230,9 +230,10 @@ class Diffc:
         return result
 
 def signal_handler(signum, frame):
-    pass
+    print("Interrupted.")
+    sys.exit(0)
 
-if __name__ == "__main__":
+def main():
     d = Diffc()
 
     signal.signal(signal.SIGINT, signal_handler)
@@ -242,14 +243,12 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 :
         lines = d.diff(sys.argv[1:])
     else:
-        try : 
-            lines = sys.stdin.readlines()
-        except IOError:
-            print("Interrupted.") 
-            exit()
+        lines = sys.stdin.readlines()
 
     input = map(lambda x: re.sub("[\r\n]*$","",x), lines)
     output = d.color(input)
     for r in output :
         print(r)
 
+if __name__ == "__main__":
+    main()
